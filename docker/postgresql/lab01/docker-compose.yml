@@ -9,7 +9,7 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-p102030}
       PGDATA: /data/postgres
     volumes:
-       - postgres:/data/postgres
+       - postgres-data:/data/postgres
     ports:
       - "5432:5432"
     networks:
@@ -23,7 +23,7 @@ services:
       PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL:-pgadmin4@pgadmin.org}
       PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD:-admin}
     volumes:
-       - pgadmin:/root/.pgadmin
+       - pgadmin-data:/root/.pgadmin
     ports:
       - "${PGADMIN_PORT:-5050}:80"
     networks:
@@ -35,5 +35,5 @@ networks:
     driver: bridge
 
 volumes:
-    postgres:
-    pgadmin:
+    postgres-data:
+    pgadmin-data:
