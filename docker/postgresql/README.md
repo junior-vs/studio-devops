@@ -9,7 +9,7 @@
 * Clone or download this repository
 * Go inside of directory,  `cd compose-postgres`
 * Run this command `docker-compose up -d`
-* 'docker-compose -f lab01/docker-compose.yml up -d --build'
+* `docker-compose -f docker-compose.yml up -d --build`
 
 ## Environments
 This Compose file contains the following environment variables:
