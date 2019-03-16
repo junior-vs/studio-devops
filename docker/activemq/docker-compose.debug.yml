@@ -1,0 +1,10 @@
+version: '2.1'
+
+services:
+  activemq:
+    image: activemq
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - 30001:30001

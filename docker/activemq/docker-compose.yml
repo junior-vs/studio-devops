@@ -1,0 +1,12 @@
+version: '3.5'
+
+services:
+  activemq:
+    container_name: artemis
+    image: vromero/activemq-artemis:2.6-alpine-latest 
+    ports:
+      - 8161:8161 
+      - 61616:61616
+    environment:
+      ARTEMIS_USERNAME: admin
+      ARTEMIS_PASSWORD: 102030
