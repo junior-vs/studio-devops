@@ -1,0 +1,10 @@
+version: '2.1'
+
+services:
+  sonar:
+    image: sonar
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - 3002:3002
