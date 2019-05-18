@@ -1,0 +1,11 @@
+connect 
+ 
+batch
+ 
+module add --name=com.postgresql --resources=/home/valdir/dev_env/servers/jdbc-drivers/postgresql-42.2.5.jar --dependencies=javax.api,javax.transaction.api
+
+/subsystem=datasources/jdbc-driver=postgresql:add(driver-name=postgresql,driver-module-name=com.postgresql,driver-xa-datasource-class-name=org.postgresql.xa.PGXADataSource)
+
+data-source add --name=PostgresDS --jndi-name=java:jboss/PostgresDS --driver-name=postgresql --connection-url=jdbc:postgresql://localhost:5432/AdventureWorks --user-name=postgres --password=p102030 --validate-on-match=true --background-validation=false --valid-connection-checker-class-name=org.jboss.jca.adapters.jdbc.extensions.postgres.PostgreSQLValidConnectionChecker --exception-sorter-class-name=org.jboss.jca.adapters.jdbc.extensions.postgres.PostgreSQLExceptionSorter
+
+run-batch

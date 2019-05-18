@@ -2,10 +2,10 @@
 batch
 
 # Create profile
-/profile=full:clone(to-profile=aw)
+/profile=full-ha:clone(to-profile=aw)
 
 # Create Server-group
-/server-group=aw-server-group:add(profile=aw, socket-binding-group=full-sockets)
+/server-group=aw-server-group:add(profile=aw, socket-binding-group=full-ha-sockets)
 /server-group=aw-server-group/jvm=default:add
 /server-group=aw-server-group/jvm=default:write-attribute(name=heap-size,value="64m")
 /server-group=aw-server-group/jvm=default:write-attribute(name=max-heap-size,value="1024m")

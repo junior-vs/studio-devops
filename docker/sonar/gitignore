@@ -1,0 +1,3 @@
+postgresql_data/*
+sonarqube_data/*
+sonarqube_extensions/*

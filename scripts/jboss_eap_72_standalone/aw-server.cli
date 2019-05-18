@@ -1,0 +1,26 @@
+
+batch
+
+
+#create datasource
+
+/subsystem=datasources/jdbc-driver=com.postgresql:add(driver-name=com.postgresql,driver-module-name=com.postgresql,driver-xa-datasource-class-name=org.postgresql.xa.PGXADataSource)
+data-source add  --name=AW_DS --jndi-name=java:jboss/AW_DS --driver-name=com.postgresql --connection-url=jdbc:postgresql://localhost:5432/AdventureWorks --user-name=postgres --password=p102030  --enabled=true --use-java-context="true" --validate-on-match=true --background-validation=false --valid-connection-checker-class-name=org.jboss.jca.adapters.jdbc.extensions.postgres.PostgreSQLValidConnectionChecker --exception-sorter-class-name=org.jboss.jca.adapters.jdbc.extensions.postgres.PostgreSQLExceptionSorter
+
+jms-queue add --profile=aw --queue-address=TestQueue --entries=[queue/TestQueue jms/queue/TestQueue java:jboss/exported/jms/queue/TestQueue]
+jms-topic add --profile=aw --topic-address=TestTopic --entries=[topic/TestTopic jms/topic/TestTopic java:jboss/exported/jms/topic/TestTopic]
+
+
+
+
+# Configure the ee subsystem to enable MDB annotation property substitution
+/subsystem=ee:write-attribute(name=annotation-property-replacement,value=true)
+
+# Define system properties to be used in the substititution
+/system-property=property.mdb.queue.test_queue:add(value=jms/queue/TestQueue)
+/system-property=property.mdb.topic.test_topic:add(value=jms/topic/TestTopic)
+/system-property=property.connection.factory:add(value=java:/ConnectionFactory)
+
+run-batch
+# Reload the server configuration
+reload --host=master
