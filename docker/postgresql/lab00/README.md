@@ -11,6 +11,7 @@
 * Run this command `docker-compose up -d`
 * `docker-compose -f docker-compose.yml up -d --build`
 
+
 ## Environments
 This Compose file contains the following environment variables:
 
@@ -20,12 +21,20 @@ This Compose file contains the following environment variables:
 * `PGADMIN_DEFAULT_EMAIL` the default value is **pgadmin4@pgadmin.org**
 * `PGADMIN_DEFAULT_PASSWORD` the default value is **admin**
 
+
 ## Access to postgres: 
 * `localhost:5432`
 * **Username:** postgres (as a default)
 * **Password:** p102030 (as a default)
-\
+
 ## Access to PgAdmin: 
-* **URL:** `http://localhost:5050`
+* **URL:** http://localhost:5050
 * **Username:** pgadmin4@pgadmin.org
 * **Password:** admin 
+
+##PSQL
+
+psql -h localhost -p 5432 -U postgres
+
+psql -h localhost -p 5432 -U postgres -c "CREATE DATABASE \"Adventureworks\";"
+psql -h localhost -p 5432 -U postgres  -d Adventureworks < install.sql
