@@ -1,1 +1,1 @@
-module add --name=com.postgresql --resources=/home/valdir/dev/sources/environments/dev-environment/scripts/resources/postgresql-42.2.5.jar --dependencies=javax.api,javax.transaction.api
+module add --name=com.postgresql --resources=/home/valdir/dev/sources/dev-environment/scripts/resources/postgresql-42.2.5.jar --dependencies=javax.api,javax.transaction.api

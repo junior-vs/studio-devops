@@ -2,8 +2,10 @@
 batch
 #create datasource
 
+module add --name=com.postgresql --resources=/home/valdir/dev/sources/dev-environment/scripts/resources/postgresql-42.2.5.jar --dependencies=javax.api,javax.transaction.api
+
 /subsystem=datasources/jdbc-driver=com.postgresql:add(driver-name=com.postgresql,driver-module-name=com.postgresql,driver-xa-datasource-class-name=org.postgresql.xa.PGXADataSource)
-data-source add  --name=AW_DS --jndi-name=java:jboss/AW_DS --driver-name=com.postgresql --connection-url=jdbc:postgresql://localhost:5432/AdventureWorks --user-name=postgres --password=p102030  --enabled=true --use-java-context="true" --validate-on-match=true --background-validation=false --valid-connection-checker-class-name=org.jboss.jca.adapters.jdbc.extensions.postgres.PostgreSQLValidConnectionChecker --exception-sorter-class-name=org.jboss.jca.adapters.jdbc.extensions.postgres.PostgreSQLExceptionSorter
+data-source add --name=AW_DS --jndi-name=java:jboss/AW_DS --driver-name=com.postgresql --connection-url=jdbc:postgresql://localhost:5432/adventureworks --user-name=postgres --password=p102030 --enabled=true --use-java-context="true" --validate-on-match=true --background-validation=false --valid-connection-checker-class-name=org.jboss.jca.adapters.jdbc.extensions.postgres.PostgreSQLValidConnectionChecker --exception-sorter-class-name=org.jboss.jca.adapters.jdbc.extensions.postgres.PostgreSQLExceptionSorter
 
 jms-queue add --profile=aw --queue-address=TestQueue --entries=[queue/TestQueue jms/queue/TestQueue java:jboss/exported/jms/queue/TestQueue]
 jms-topic add --profile=aw --topic-address=TestTopic --entries=[topic/TestTopic jms/topic/TestTopic java:jboss/exported/jms/topic/TestTopic]
