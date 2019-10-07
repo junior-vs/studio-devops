@@ -64,6 +64,21 @@ services:
         - postgres
       networks:
         - environment-network
+
+  sonarqube:
+    image: sonarqube
+    ports:
+      - "9000:9000"
+    networks:
+      - environment-network
+    depends_on:
+        - postgres
+    environment:
+      - sonar.jdbc.url=jdbc:postgresql://postgres:5432/sonar
+    volumes:
+      - sonarqube_conf:/opt/sonarqube/conf
+      - sonarqube_data:/opt/sonarqube/data
+      - sonarqube_extensions:/opt/sonarqube/extensions
  
 
 networks:
@@ -73,3 +88,6 @@ networks:
 volumes:
     postgres-data:
     pgadmin-data:
+    sonarqube_conf:
+    sonarqube_data:
+    sonarqube_extensions:
