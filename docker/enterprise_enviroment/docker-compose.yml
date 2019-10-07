@@ -64,22 +64,25 @@ services:
         - postgres
       networks:
         - environment-network
-
+ 
   sonarqube:
+    container_name: sonarqube
     image: sonarqube
     ports:
       - "9000:9000"
     networks:
       - environment-network
-    depends_on:
-        - postgres
     environment:
       - sonar.jdbc.url=jdbc:postgresql://postgres:5432/sonar
+      - sonar.jdbc.username=postgres
+      - sonar.jdbc.password=p102030
     volumes:
       - sonarqube_conf:/opt/sonarqube/conf
       - sonarqube_data:/opt/sonarqube/data
       - sonarqube_extensions:/opt/sonarqube/extensions
- 
+      - sonarqube_logs:/opt/sonarqube/logs
+    depends_on:
+      - postgres
 
 networks:
   environment-network:
@@ -91,3 +94,4 @@ volumes:
     sonarqube_conf:
     sonarqube_data:
     sonarqube_extensions:
+    sonarqube_logs:
