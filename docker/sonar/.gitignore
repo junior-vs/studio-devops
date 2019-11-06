@@ -1,5 +1,4 @@
-/sonarqube_conf:
-/sonarqube_data:
-/sonarqube_extensions:
-/postgresql:
-/postgresql_data:
+sonarqube_conf
+sonarqube_data
+sonarqube_extensions
+sonarqube_logs
