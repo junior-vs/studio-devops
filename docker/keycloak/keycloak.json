@@ -1,0 +1,13 @@
+{
+  "realm": "dev",
+  "auth-server-url": "http://localhost:8180/auth",
+  "ssl-required": "external",
+  "resource": "employee-service",
+  "verify-token-audience": true,
+  "credentials": {
+    "secret": "8a5e42d5-5c66-4dcc-9e08-3fb5c327ea0d"
+  },
+  "use-resource-role-mappings": true,
+  "confidential-port": 0,
+  "policy-enforcer": {}
+}

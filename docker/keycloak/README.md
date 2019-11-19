@@ -1,0 +1,1 @@
+http://localhost:8180/auth/realms/dev/protocol/openid-connect/token

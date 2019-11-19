@@ -1,0 +1,9 @@
+{
+  "realm": "dev",
+  "public_key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEArXedHjyIs0Tm+n8KnO3o2z3fzcYnNBx5opYSzrE6xJR1Y33Os5rId1DB066cgvTGTukgmdSR8Y4ux8+qWGZCL39m/QqSjMkckLSXb9VfypNteJh4aoYbARIACVjveVAdMk49tz1EgS8kEbRJtpjM8yHZq5kd/qjjVE2zKS2tF/wPw4ggJ51TjxO9A0X3aqcd1u97BFVBCrzb87pP/qhAWzsLa85CypTPPRCsQX8RGDHJzMIZIeGOiHq24LTZ8JBLiusbv/bOn+THXiyivqhhQzrjSTnV66QNfKGb7mLUPyVMznDbadQxg86OTE38K6JAcQOctJIbn0F/94AnYjghfQIDAQAB",
+  "token-service": "http://localhost:8180/auth/realms/dev/protocol/openid-connect",
+  "account-service": "http://localhost:8180/auth/realms/dev/account",
+  "tokens-not-before": 0
+}
+
+  
