@@ -1,25 +1,29 @@
-version: '3'
+version: '3.5'
 
 services:
-  mysql:
+  mysql_server:
     image: mysql:5.7
     environment:
-      MYSQL_ROOT_PASSWORD: "S@102030"
-      MYSQL_DATABASE: "testedb"
+      MYSQL_ROOT_PASSWORD: root      
+      MYSQL_USER: root
+      MYSQL_PASSWORD: root
+      MYSQL_ENTRYPOINT_INITDB: ./mysql/docker-entrypoint-initdb.d
     ports:
       - "3306:3306"
     volumes:
       - ./volumes/mysql:/var/lib/mysql
     networks:
-      - mysql-compose-network
+      - network-mysql
+    restart: unless-stopped
 
   adminer:
     image: adminer
     ports:
       - 8089:8080
     networks:
-      - mysql-compose-network
+      - network-mysql
+    restart: unless-stopped
 
 networks: 
-  mysql-compose-network:
+  network-mysql:
     driver: bridge
