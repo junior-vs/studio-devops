@@ -27,7 +27,9 @@
 # Introduction
 Elastic Stack (AKA **ELK**) Docker Composition, preconfigured with **Security**, **Monitoring**, Tools such as **ElastAlert** for alerting and **Curator**.
 
-Based on [Official Elastic Docker Images](https://www.docker.elastic.co/)
+Based on 
+- [Official Elastic Docker Images](https://www.docker.elastic.co/)
+- [git: sherifabdlnaby/elastdocke](https://github.com/sherifabdlnaby/elastdocker)
 
 Stack Version: [7.4.0](https://www.elastic.co/blog/elastic-stack-7-4-0-released).
 > You can change Elastic Stack version by setting `ELK_VERSION` in `.env` file and rebuild your images. Any version >= 7.0.0 is compatible with this template.
