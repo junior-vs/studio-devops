@@ -1,0 +1,8 @@
+version: '2.1'
+
+services:
+  lab1:
+    image: lab1
+    build: .
+    ports:
+      - 3000:3000

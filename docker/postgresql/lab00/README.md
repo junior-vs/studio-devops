@@ -35,7 +35,7 @@ This Compose file contains the following environment variables:
 - **Username:** pgadmin4@pgadmin.org
 - **Password:** admin
 
-##PSQL
+## PSQL
 
 psql -h localhost -p 5432 -U postgres
 
