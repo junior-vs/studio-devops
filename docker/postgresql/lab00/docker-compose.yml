@@ -3,13 +3,13 @@ version: '3.5'
 services:
   postgres:
     container_name: postgres_container
-    image: postgres:11.5
+    image: postgres:11.6
     environment:
       POSTGRES_USER: ${POSTGRES_USER:-postgres}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-p102030}
       PGDATA: /data/postgres
     volumes:
-     #  - ./postgres-data:/data/postgres
+       - "./data/postgres-data:/data/postgres"
        - "./data/postgres:/var/lib/postgresql/data"
        - "./data/pgdata:/var/lib/postgresql/data/pgdata"
     ports:
@@ -20,7 +20,7 @@ services:
   
   pgadmin:
     container_name: pgadmin_container
-    image: dpage/pgadmin4:4.13
+    image: dpage/pgadmin4:4.17
     environment:
       PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL:-pgadmin4@pgadmin.org}
       PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD:-admin}
@@ -29,6 +29,8 @@ services:
     networks:
       - network-postgre
     restart: unless-stopped
+    depends_on: 
+      - postgres
 
 networks:
   network-postgre:

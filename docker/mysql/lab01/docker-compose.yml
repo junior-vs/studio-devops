@@ -1,8 +1,9 @@
 version: '3.5'
 
 services:
-  mysql_server:
+  mysqldb:
     image: mysql:5.7
+    container_name: mysqldb
     environment:
       MYSQL_ROOT_PASSWORD: root      
       MYSQL_USER: root
@@ -23,6 +24,8 @@ services:
     networks:
       - network-mysql
     restart: unless-stopped
+    depends_on: 
+      - mysqldb
 
 networks: 
   network-mysql:
