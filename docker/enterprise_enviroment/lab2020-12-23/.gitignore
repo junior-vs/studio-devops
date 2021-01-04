@@ -1,0 +1,5 @@
+sonarqube_data/
+sonarqube_conf/
+sonarqube_extensions/
+postgres-data/
+pgadmin-data/

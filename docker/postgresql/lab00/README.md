@@ -39,6 +39,7 @@ This Compose file contains the following environment variables:
 
 psql -h localhost -p 5432 -U postgres
 
+docker exec -it postgres_container /bin/bash
 psql -h localhost -p 5432 -U postgres -c "CREATE DATABASE \"Adventureworks\";"
 psql -h localhost -p 5432 -U postgres -d Adventureworks < install.sql
 
