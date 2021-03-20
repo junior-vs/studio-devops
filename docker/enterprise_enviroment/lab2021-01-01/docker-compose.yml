@@ -3,8 +3,8 @@ version: '3.5'
 services:
   postgres:
     container_name: postgres
-    image: postgres:12.5
-    environment:
+    image: postgres:12.6
+    environment: 
       POSTGRES_USER: ${POSTGRES_USER:-postgres}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-p102030}
       PGDATA: /data/postgres
@@ -21,7 +21,7 @@ services:
   
   pgadmin:
     container_name: pgadmin
-    image: dpage/pgadmin4:4.29
+    image: dpage/pgadmin4:5.0
     environment:
       PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL:-pgadmin4@pgadmin.org}
       PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD:-admin}
@@ -35,7 +35,7 @@ services:
 
   sonarqube:
     container_name: sonar_community
-    image: sonarqube:8.6.0-community
+    image: sonarqube:8.7.1-community
     depends_on:
       - postgres
     ulimits:
