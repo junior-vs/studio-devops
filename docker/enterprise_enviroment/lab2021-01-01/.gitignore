@@ -1,8 +1,1 @@
-data/
-pgadmin-data/
-postgres-data/
-sonarqube_conf/
-sonarqube_data/
-sonarqube_extensions/
-sonarqube_logs/
-sonarqube_temp/
+shared/
