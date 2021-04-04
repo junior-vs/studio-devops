@@ -1,0 +1,30 @@
+version: "3.4"
+
+services:
+  sonarqube:
+    container_name: sonar_community
+    image: sonarqube:8.7.1-community
+    ulimits:
+      memlock:
+        soft: -1 
+        hard: -1
+    ports:
+      - "9000:9000"
+    networks:
+      - environment_dev
+    environment:
+      SONAR_JDBC_URL: jdbc:postgresql://localhost:5432/sonar
+      SONAR_JDBC_USERNAME: postgres
+      SONAR_JDBC_PASSWORD: p102030
+    volumes:
+      - "./shared/sonarqube/opt/sonarqube/data:/opt/sonarqube/data"
+      - "./shared/sonarqube/opt/sonarqube/extensions:/opt/sonarqube/extensions"
+      - "./shared/sonarqube/opt/sonarqube/logs:/opt/sonarqube/logs"
+      - "./shared/sonarqube/opt/sonarqube/temp:/opt/sonarqube/temp"
+
+networks:
+  environment_dev:
+    driver: bridge
+
+volumes:
+  shared: {}
