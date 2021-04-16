@@ -59,5 +59,5 @@ psql -h localhost -p 5432 -U postgres -d northwind < schemas\northwind_psql-mast
 
 ```bash
 wsl -d docker-desktop
-sysctl -w vm.max_map_count=262144
+sysctl -w vm.max_map_count = 262144
 ```

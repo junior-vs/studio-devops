@@ -4,6 +4,7 @@ services:
   postgres:
     container_name: postgres
     image: postgres:latest
+    hostname: hostdb
     environment:
       POSTGRES_USER: ${POSTGRES_USER:-postgres}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-p102030}

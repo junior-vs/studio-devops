@@ -1,0 +1,41 @@
+version: "3.9"
+
+networks:
+  dev_network:
+    driver: bridge
+    external: true
+
+volumes:
+  shared: {}
+
+services:
+  mongo-express:
+    image: mongo-express
+    container_name: mongo-express
+    ports:
+      - 8081:8081
+    environment:
+      ME_CONFIG_BASICAUTH_USERNAME: appuser
+      ME_CONFIG_BASICAUTH_PASSWORD: appuser
+      ME_CONFIG_MONGODB_PORT: 27017
+      ME_CONFIG_MONGODB_ADMINUSERNAME: root
+      ME_CONFIG_MONGODB_ADMINPASSWORD: p102030
+    links:
+      - mongo
+    networks:
+      - dev_network
+    depends_on: 
+      - mongo
+
+  mongo:
+    image: mongo
+    container_name: mongo
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: p102030
+    ports:
+      - "27017:27017"
+    volumes:
+      - "./shared/mongo/data/db:/data/db"
+    networks:
+      - dev_network

@@ -1,9 +1,19 @@
 version: "3.9"
 
+networks:
+  dev_network:
+    driver: bridge
+    external: true
+
+volumes:
+  shared: {}
+  schemas: {}
+
 services:
   postgres:
     container_name: postgres
     image: postgres:latest
+    hostname: hostdb2
     environment:
       POSTGRES_USER: ${POSTGRES_USER:-postgres}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-p102030}
@@ -16,7 +26,7 @@ services:
     ports:
       - "5432:5432"
     networks:
-      - environment_dev
+      - dev_network
     restart: unless-stopped
 
   pgadmin:
@@ -28,16 +38,7 @@ services:
     ports:
       - "${PGADMIN_PORT:-5050}:80"
     networks:
-      - environment_dev
+      - dev_network
     restart: unless-stopped
     depends_on:
       - postgres
-
-
-networks:
-  environment_dev:
-    driver: bridge
-
-volumes:
-  shared: {}
-  schemas: {}
