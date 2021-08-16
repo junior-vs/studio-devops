@@ -23,7 +23,7 @@ services:
       --defaultentrypoints="http"
     ports:
       - 81:80
-      - 3000:8080
+      - 38080:8080
     #    restart: unless-stopped
     networks:
       - dev_network
@@ -49,7 +49,7 @@ services:
       - dev_network
     labels:
       traefik.enable: "true"
-      traefik.port: 8080
+      traefik.port: 38080
       traefik.protocol: http
       traefik.frontend.rule: Host:localhost
       traefik.frontend.passHostHeader: "true"

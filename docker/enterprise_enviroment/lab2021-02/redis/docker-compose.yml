@@ -1,0 +1,30 @@
+version: '3.4'
+
+networks:
+  dev_network:
+    driver: bridge
+    external: true
+
+volumes:
+  shared: {}
+
+services:
+  redis:
+    image: "redis"
+    container_name: redis
+    command: redis-server --requirepass p102030
+
+    ports:
+     - "6379:6379"
+
+    volumes:
+      - ./shared/redis/var/lib/redis:/var/lib/redis
+      - ./shared/redis/redis.conf:/usr/local/etc/redis/redis.conf
+
+    environment:
+     - REDIS_REPLICATION_MODE=master
+
+    networks:
+      dev_network:
+        #ipv4_address: 172.28.1.4
+

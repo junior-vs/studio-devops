@@ -27,7 +27,7 @@ services:
       - "5432:5432"
     networks:
       - dev_network
-    restart: unless-stopped
+    
 
   pgadmin:
     container_name: pgadmin
@@ -39,6 +39,5 @@ services:
       - "${PGADMIN_PORT:-5050}:80"
     networks:
       - dev_network
-    restart: unless-stopped
     depends_on:
       - postgres
