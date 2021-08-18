@@ -4,9 +4,7 @@ metadata:
   name: svc-db-noticias
 spec:
   type: ClusterIP
+  ports:
+    - port: 3306
   selector:
     app: db-noticias
-  ports:
-  - port: 3306
-    #targetPort: <Target Port>
-  
