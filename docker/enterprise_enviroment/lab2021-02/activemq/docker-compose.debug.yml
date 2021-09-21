@@ -1,0 +1,8 @@
+version: '3.4'
+
+services:
+  activemq:
+    image: activemq
+    build:
+      context: .
+      dockerfile: ./Dockerfile

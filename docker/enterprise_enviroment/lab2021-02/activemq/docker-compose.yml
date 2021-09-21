@@ -1,0 +1,19 @@
+version: '3.4'
+
+services:
+  activemq:
+    container_name: activemq
+    image: vromero/activemq-artemis
+    environment:
+      ARTEMIS_USERNAME: user-amq
+      ARTEMIS_PASSWORD: password-amq
+    ports:
+      - 8161:8161
+      - 61616:61616
+    networks:
+      - dev_network
+networks:
+  dev_network:
+    driver: bridge
+    external: true
+
