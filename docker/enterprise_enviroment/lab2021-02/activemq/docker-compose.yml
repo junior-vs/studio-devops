@@ -1,19 +1,24 @@
 version: '3.4'
 
+networks:
+  dev_network:
+    driver: bridge
+    external: true
+
+volumes:
+  shared: {}
+  
+
 services:
   activemq:
     container_name: activemq
-    image: vromero/activemq-artemis
-    environment:
-      ARTEMIS_USERNAME: user-amq
-      ARTEMIS_PASSWORD: password-amq
+    image: rmohr/activemq
     ports:
       - 8161:8161
       - 61616:61616
     networks:
       - dev_network
-networks:
-  dev_network:
-    driver: bridge
-    external: true
+    volumes:
+    #  - ./shared/conf:/opt/activemq/conf
+      - ./shared/data:/opt/activemq/data
 
