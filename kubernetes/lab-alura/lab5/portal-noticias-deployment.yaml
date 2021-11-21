@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: portal-noticias-deployment
-spec:  
+spec:
   template:
     metadata:
       name: portal-noticias
@@ -26,11 +26,14 @@ spec:
             initialDelaySeconds: 20
           readinessProbe:
             httpGet:
-              path: /inserir_noticias.php
+              path: /
               port: 80
             periodSeconds: 10
-            failureThreshold: 3
+            failureThreshold: 5
             initialDelaySeconds: 3
+          resources:
+            requests:
+              cpu: 10m
   replicas: 3
   selector:
     matchLabels:
