@@ -1,0 +1,16 @@
+version: '3.4'
+
+services:
+  activemq:
+    container_name: activemq-artemis
+    image: apache/activemq-artemis
+    ports:
+      - 8161:8161
+      - 61616:61616
+    networks:
+      - dev_network
+networks:
+  dev_network:
+    driver: bridge
+    external: true
+

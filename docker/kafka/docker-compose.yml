@@ -1,0 +1,16 @@
+version: '3.4'
+
+networks:
+  dev_network:
+    driver: bridge
+    external: true
+
+volumes:
+  shared: {}
+
+services:
+  kafka:
+    image: kafka
+    build:
+      context: .
+      dockerfile: ./Dockerfile

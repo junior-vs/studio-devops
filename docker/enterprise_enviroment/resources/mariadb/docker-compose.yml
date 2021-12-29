@@ -1,0 +1,34 @@
+version: '3.4'
+
+services:
+
+networks:
+  dev_network:
+    driver: bridge
+    external: true
+
+volumes:
+  shared: {}
+
+services:
+  mariadb:
+    image: mariadb
+    container_name: maria-db    
+    environment:
+      MYSQL_ROOT_PASSWORD: p102030      
+      MYSQL_USER: appuser
+      MYSQL_PASSWORD: appuser
+    ports:
+      - "3366:3306"
+    volumes:
+      - ./shared/banco:/var/lib/mysql
+      - ./schemas:/schemas
+    networks:
+      - dev_network
+
+  adminer:
+    image: adminer
+    ports:
+      - 8089:8080
+    networks:
+      - dev_network 

@@ -1,0 +1,43 @@
+version: "3.9"
+
+networks:
+  dev_network:
+    driver: bridge
+    external: true
+
+volumes:
+  shared: {}
+  schemas: {}
+
+services:
+  postgres:
+    container_name: postgres
+    image: postgres:14.1
+    hostname: hostdb2
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-p102030}
+      PGDATA: /data/postgres
+    volumes:
+      - "./shared/postgres/data/postgres:/data/postgres"
+      - "./shared/postgres/var/lib/postgresql/data:/var/lib/postgresql/data"
+      - "./shared/postgres/var/lib/postgresql/data/pgdata:/var/lib/postgresql/data/pgdata"
+      - "./schemas:/schemas"
+    ports:
+      - "5432:5432"
+    networks:
+      - dev_network
+    
+
+  pgadmin:
+    container_name: pgadmin
+    image: dpage/pgadmin4:6.3
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL:-pgadmin4@pgadmin.org}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD:-admin}
+    ports:
+      - "${PGADMIN_PORT:-5050}:80"
+    networks:
+      - dev_network
+    depends_on:
+      - postgres

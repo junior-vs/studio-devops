@@ -1,0 +1,38 @@
+version: '3.4'
+
+networks:
+  dev_network:
+    driver: bridge
+    external: true
+
+volumes:
+  shared: {}
+
+services:
+  mysqldb:
+    image: mysql:latest
+    #hostname: mysqlhost
+    container_name: mysqldb
+    environment:
+      MYSQL_ROOT_PASSWORD: p102030      
+      MYSQL_USER: appuser
+      MYSQL_PASSWORD: appuser
+      #MYSQL_ENTRYPOINT_INITDB: ./mysql/docker-entrypoint-initdb.d
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./shared/mysql/var/lib/mysql:/var/lib/mysql
+      - ./schemas:/schemas
+    networks:
+      - dev_network
+    
+
+  adminer:
+    image: adminer
+    ports:
+      - 8089:8080
+    networks:
+      - dev_network    
+    depends_on: 
+      - mysqldb
+
