@@ -1,0 +1,54 @@
+version: '3.4'
+
+networks:
+  dev_network:
+    driver: bridge
+    external: true
+
+volumes:
+  shared: {}
+
+services:
+  zookeeper:
+    image: zookeeper:3.6.3
+    hostname: zoo1
+    ports:
+      - "2181:2181"
+    environment:
+      ZOO_MY_ID: 1
+      ZOO_PORT: 2181
+      ZOO_SERVERS: server.1=zoo1:2888:3888
+    volumes:
+      - ./shared/data/zookeeper/data:/data
+      - ./shared/data/zookeeper/datalog:/datalog
+    networks:
+      - dev_network
+  kafka:
+    image: 'bitnami/kafka:2.8.1'
+    hostname: kafka1
+    ports:
+      - '9092:9092'
+      - '9091:9091'
+    environment:
+      - KAFKA_BROKER_ID=1
+      - KAFKA_CFG_LISTENERS=PLAINTEXT://:9092
+      - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://127.0.0.1:9092
+      - KAFKA_CFG_ZOOKEEPER_CONNECT=zoo1:2181
+      - ALLOW_PLAINTEXT_LISTENER=yes
+    depends_on:
+      - zookeeper
+    networks:
+      - dev_network
+    volumes:
+      - ./shared/data/kafka1/data:/var/lib/kafka/data
+  kafdrop:
+    image: obsidiandynamics/kafdrop
+    restart: "no"
+    ports:
+      - "9017:9000"
+    environment:
+      KAFKA_BROKERCONNECT: "kafka1:9092"
+    depends_on:
+      - kafka
+    networks:
+      - dev_network

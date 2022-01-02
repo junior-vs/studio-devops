@@ -14,8 +14,7 @@ services:
     ports:
       - '2181:2181'
     environment:
-      - ALLOW_ANONYMOUS_LOGIN=yes
-      - KAFKA_INTER_BROKER_PASSWORD="p102030"
+      - ALLOW_ANONYMOUS_LOGIN=yes  
     networks:
       - dev_network
   kafka:
@@ -30,5 +29,15 @@ services:
       - ALLOW_PLAINTEXT_LISTENER=yes
     depends_on:
       - zookeeper
+    networks:
+      - dev_network
+  kafdrop:
+    image: obsidiandynamics/kafdrop    
+    ports:
+      - "9000:9000"
+    environment:
+      KAFKA_BROKERCONNECT: 127.0.0.1:9092
+    depends_on:
+      - kafka
     networks:
       - dev_network
