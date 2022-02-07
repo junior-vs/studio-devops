@@ -11,7 +11,7 @@ volumes:
 services:
   sonarqube:
     container_name: sonar_community
-    image: sonarqube:8.9.2-community
+    image: sonarqube:lts-community
 #    depends_on:
 #      - postgres
     ulimits:
