@@ -12,7 +12,7 @@ volumes:
 services:
   postgres:
     container_name: postgres
-    image: postgres:14.1
+    image: postgres:14.4
     hostname: hostdb2
     environment:
       POSTGRES_USER: ${POSTGRES_USER:-postgres}
@@ -27,13 +27,11 @@ services:
       - "5432:5432"
     networks:
       - dev_network
-    
-
   pgadmin:
     container_name: pgadmin
-    image: dpage/pgadmin4:6.3
+    image: dpage/pgadmin4:6.10
     environment:
-      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL:-pgadmin4@pgadmin.org}
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL:-admin@admin.org}
       PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD:-admin}
     ports:
       - "${PGADMIN_PORT:-5050}:80"
@@ -41,3 +39,27 @@ services:
       - dev_network
     depends_on:
       - postgres
+
+  sonarqube:
+    container_name: sonar_community
+    image: sonarqube:lts-community
+    depends_on:
+      - postgres
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    ports:
+      - "9000:9000"
+    networks:
+      - dev_network
+    #    restart: unless-stopped
+    environment:
+      SONAR_JDBC_URL: jdbc:postgresql://hostdb2:5432/sonar
+      SONAR_JDBC_USERNAME: postgres
+      SONAR_JDBC_PASSWORD: p102030
+    volumes:
+      - "./shared/sonarqube/opt/sonarqube/data:/opt/sonarqube/data"
+      - "./shared/sonarqube/opt/sonarqube/extensions:/opt/sonarqube/extensions"
+      - "./shared/sonarqube/opt/sonarqube/logs:/opt/sonarqube/logs"
+      - "./shared/sonarqube/opt/sonarqube/temp:/opt/sonarqube/temp"

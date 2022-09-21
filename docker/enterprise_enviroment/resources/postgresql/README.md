@@ -20,7 +20,7 @@ This Compose file contains the following environment variables:
 - `POSTGRES_USER` the default value is **postgres**
 - `POSTGRES_PASSWORD` the default value is **p102030**
 - `PGADMIN_PORT` the default value is **5050**
-- `PGADMIN_DEFAULT_EMAIL` the default value is **pgadmin4@pgadmin.org**
+- `PGADMIN_DEFAULT_EMAIL` the default value is **admin@admin.org**
 - `PGADMIN_DEFAULT_PASSWORD` the default value is **admin**
 
 ## Access to postgres
@@ -32,7 +32,7 @@ This Compose file contains the following environment variables:
 ## Access to PgAdmin
 
 - **URL:** http://localhost:5050
-- **Username:** pgadmin4@pgadmin.org
+- **Username:** admin@admin.org
 - **Password:** admin
 
 ## PSQL
