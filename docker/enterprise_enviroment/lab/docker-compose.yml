@@ -19,10 +19,10 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-p102030}
       PGDATA: /data/postgres
     volumes:
-      - "./shared/postgresdata/postgres:/data/postgres"
-      - "./shared/postgres/var/lib/postgresql/data:/var/lib/postgresql/data"
-      - "./shared/postgres/var/lib/postgresql/data/pgdata:/var/lib/postgresql/data/pgdata"
-      - "./shared/postgres/scritps:/docker-entrypoint-initdb.d"
+      - "./shared/postgresql/postgresdata/postgres:/data/postgres"
+      - "./shared/postgresql/var/lib/postgresql/data:/var/lib/postgresql/data"
+      - "./shared/postgresql/var/lib/postgresql/data/pgdata:/var/lib/postgresql/data/pgdata"
+      - "./scritps:/docker-entrypoint-initdb.d"
       - "./schemas:/schemas"
     ports:
       - "5432:5432"
@@ -45,7 +45,7 @@ services:
     ports:
       - '7981:9000'
     volumes:
-      - "./shared/sonarqube_data:/bitnami" 
+      - "./shared/sonarqube/sonarqube_data:/bitnami" 
       - "./shared/sonarqube/logs:/opt/bitnami/sonarqube/logs" 
     depends_on:
       - postgres
