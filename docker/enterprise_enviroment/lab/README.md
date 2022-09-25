@@ -1,6 +1,28 @@
 # Introduction 
 Infra utilizando o docker compose como base
 
+## Create docker network dev_network
+
+```bash
+docker network create dev_network
+```
+
+## Subir 
+
+```bash
+# basico
+docker compose -f "docker-compose.yml" up -d --build 
+# backend [rabbitmq, kafka, keycloak]
+docker compose -f "docker-compose.yml" --profile backend up -d --build 
+# qa [sonar]
+docker compose -f "docker-compose.yml" --profile qa up -d --build 
+# monitoring
+docker compose -f "docker-compose.yml" --profile monitoring up -d --build 
+
+```
+
+
+
 ## Tecnologias
 
 - Postgres

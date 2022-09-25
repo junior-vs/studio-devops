@@ -11,69 +11,154 @@ volumes:
 
 services:
   postgres:
-    container_name: postgres
+    container_name: postgres-1
     image: postgres:14
     hostname: hostdb2
     environment:
-      POSTGRES_USER: ${POSTGRES_USER:-postgres}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-p102030}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       PGDATA: /data/postgres
     volumes:
-      - "./shared/postgresql/postgresdata/postgres:/data/postgres"
-      - "./shared/postgresql/var/lib/postgresql/data:/var/lib/postgresql/data"
-      - "./shared/postgresql/var/lib/postgresql/data/pgdata:/var/lib/postgresql/data/pgdata"
+      - "${SHARED_VOL}/postgresql/postgresdata/postgres:/data/postgres"
+      - "${SHARED_VOL}/postgresql/var/lib/postgresql/data:/var/lib/postgresql/data"
+      - "${SHARED_VOL}/postgresql/var/lib/postgresql/data/pgdata:/var/lib/postgresql/data/pgdata"
       - "./scritps:/docker-entrypoint-initdb.d"
       - "./schemas:/schemas"
     ports:
-      - "5432:5432"
+      - "${POSTGRES_PORT}:5432"
     networks:
-      - dev_network
+      - ${NETWORK}
   pgadmin:
-    container_name: pgadmin
+    container_name: pgadmin-1
     image: dpage/pgadmin4
     environment:
-      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL:-admin@admin.org}
-      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD:-admin}
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
     ports:
-      - "${PGADMIN_PORT:-5050}:80"
+      - "${PGADMIN_PORT}:80"
     networks:
-      - dev_network
+      - ${NETWORK}
     depends_on:
       - postgres
   sonarqube:
     image: bitnami/sonarqube
     ports:
-      - '7981:9000'
+      - '${SONAR_PORT}:9000'
     volumes:
-      - "./shared/sonarqube/sonarqube_data:/bitnami" 
-      - "./shared/sonarqube/logs:/opt/bitnami/sonarqube/logs" 
+      - "${SHARED_VOL}/sonarqube/sonarqube_data:/bitnami" 
+      - "${SHARED_VOL}/sonarqube/logs:/opt/bitnami/sonarqube/logs" 
     depends_on:
       - postgres
     networks:
-      - dev_network
+      - ${NETWORK}
     environment:
       # ALLOW_EMPTY_PASSWORD is recommended only for development.
       ALLOW_EMPTY_PASSWORD: yes
-      SONARQUBE_DATABASE_HOST: postgres
-      SONARQUBE_DATABASE_PORT_NUMBER: 5432      
-      SONARQUBE_DATABASE_NAME: sonardb
-      SONARQUBE_DATABASE_USER: sonarapp
-      SONARQUBE_DATABASE_PASSWORD: sonarapp
+      SONARQUBE_USERNAME: ${SONARQUBE_USERNAME}
+      SONARQUBE_PASSWORD: ${SONARQUBE_PASSWORD}
+      SONARQUBE_DATABASE_HOST: ${POSTGRES_HOST}
+      SONARQUBE_DATABASE_PORT_NUMBER: ${POSTGRES_PORT}      
+      SONARQUBE_DATABASE_NAME: ${SONARQUBE_DATABASE_NAME}
+      SONARQUBE_DATABASE_USER: ${SONARQUBE_DATABASE_USER}
+      SONARQUBE_DATABASE_PASSWORD: ${SONARQUBE_DATABASE_PASSWORD}
+    profiles:
+      - qa
   keycloak:
     image: bitnami/keycloak
+    container_name: keycloak-1
+    hostname: keycloak
     environment:
-      KEYCLOAK_ADMIN_PASSWORD: admin
-      KEYCLOAK_MANAGEMENT_PASSWORD: admin
-      KEYCLOAK_DATABASE_HOST: postgres
-      KEYCLOAK_DATABASE_NAME: keycloakdb
-      KEYCLOAK_DATABASE_USER: keycloakapp
-      KEYCLOAK_DATABASE_PASSWORD: keycloakapp
-      SONARQUBE_PASSWORD: p102030
+      KEYCLOAK_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD}
+      KEYCLOAK_MANAGEMENT_PASSWORD: ${KEYCLOAK_MANAGEMENT_PASSWORD}
+      KEYCLOAK_DATABASE_HOST: ${POSTGRES_HOST}
+      KEYCLOAK_DATABASE_NAME: ${KEYCLOAK_DATABASE_NAME}
+      KEYCLOAK_DATABASE_USER: ${KEYCLOAK_DATABASE_USER}
+      KEYCLOAK_DATABASE_PASSWORD: ${KEYCLOAK_DATABASE_PASSWORD}
     depends_on:
       - postgres 
     networks:
-      - dev_network
+      - ${NETWORK}
     ports:
-      - "7080:8080"
-      - "7443:8443"
-
+      - "${KEYCLOAK_HTTP_PORT}:8080"
+      - "${KEYCLOAK_HTTPS_PORT}:8443"
+    profiles:
+      - backend
+  rabbitmq:
+    image:  rabbitmq:3.10.7-management
+    hostname: rabbit
+    container_name: rabbitmq-1
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_DEFAULT_USER}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_DEFAULT_PASS}
+    ports:
+      - ${RABBIMQ_PORT_AMQP}:5672    #amqp
+      - ${RABBIMQ_PORT_HTTP}:15672  #http
+      - ${RABBIMQ_PORT_PROMETEUS}:15692  #prometheus
+    depends_on:
+      - postgres 
+    networks:
+      - ${NETWORK}
+    profiles:
+      - backend
+  zookeeper:
+    image: 'bitnami/zookeeper:latest'
+    hostname: zookeeper
+    container_name: zookeeper-1
+    ports:
+      - ${ZOOKEEPER_PORT}:2181
+    environment:
+      ALLOW_ANONYMOUS_LOGIN: yes
+      ZOO_CLIENT_USER: ${ZOO_CLIENT_USER}
+      ZOO_CLIENT_PASSWORD: ${ZOO_CLIENT_PASSWORD}
+      ZOO_SERVER_USERS: ${ZOO_SERVER_USERS}
+      ZOO_SERVER_PASSWORDS: ${ZOO_SERVER_PASSWORDS}
+    networks:
+      - ${NETWORK}
+    profiles:
+      - backend
+  kafka:
+    image: 'bitnami/kafka:latest' 
+    hostname: kafka
+    container_name: kafka-1
+    ports:
+      - ${KAFKA_PORT}:9092
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_CFG_LISTENERS: PLAINTEXT://kafka:${KAFKA_PORT}
+      KAFKA_CFG_ADVERTISED_LISTENERS: PLAINTEXT://kafka:${KAFKA_PORT}
+      KAFKA_CFG_ZOOKEEPER_CONNECT: zookeeper:${ZOOKEEPER_PORT}
+      ALLOW_PLAINTEXT_LISTENER: yes
+      KAFKA_ZOOKEEPER_USER: ${ZOO_CLIENT_USER}
+      KAFKA_ZOOKEEPER_PASSWORD: ${ZOO_CLIENT_PASSWORD}
+      KAFKA_CLIENT_USERS: ${ZOO_SERVER_USERS}
+      KAFKA_CLIENT_PASSWORDS: ${ZOO_SERVER_PASSWORDS}
+    depends_on:
+      - zookeeper
+    networks:
+      - ${NETWORK}
+    profiles:
+      - backend  
+  grafana:
+    image: grafana/grafana
+    container_name: grafana-1
+    hostname: grafana
+    environment:
+      -  GF_SECURITY_ADMIN_PASSWORD=admin
+    ports:
+      - ${GRAFANA_PORT}:3000
+    networks:
+      - ${NETWORK}
+    profiles:
+      - monitoring
+  prometheus:
+    image: bitnami/prometheus:latest
+    container_name: prometheus-1
+    hostname: prometheus    
+    ports:
+      - ${PROMETHEUS_PORT}:9090
+    networks:
+      - ${NETWORK}
+    volumes:
+      - ${SHARED_VOL}/prometheus:/opt/bitnami/prometheus/data
+    profiles:
+      - monitoring
