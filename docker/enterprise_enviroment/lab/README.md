@@ -16,9 +16,10 @@ docker compose -f "docker-compose.yml" up -d --build
 docker compose -f "docker-compose.yml" --profile backend up -d --build 
 # qa [sonar]
 docker compose -f "docker-compose.yml" --profile qa up -d --build 
-# monitoring
+# monitoring [grafana, prometheus]
 docker compose -f "docker-compose.yml" --profile monitoring up -d --build 
-
+# nosql [mongo, redis]
+docker compose -f "docker-compose.yml" --profile nosql up -d --build 
 ```
 
 
