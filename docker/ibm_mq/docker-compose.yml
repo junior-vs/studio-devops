@@ -1,0 +1,23 @@
+version: '3.4'
+
+networks:
+  dev_network:
+    driver: bridge
+    external: true
+
+services:
+  docker:
+    image: ibmcom/mq
+    ports:
+      - 1414:1414
+      - 9443:9443
+      - 9157:9157
+    environment:
+      MQ_DEV: true
+      LICENSE: accept 
+      MQ_QMGR_NAME: QM1
+      MQ_ENABLE_METRICS: true
+      MQ_APP_PASSWORD: s102030
+
+
+

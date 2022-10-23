@@ -6,7 +6,8 @@ networks:
     external: true
 
 volumes:
-  shared: {}
+  shared: 
+    driver: local
   schemas: {}
 
 services:
@@ -69,7 +70,10 @@ services:
     hostname: keycloak
     environment:
       KEYCLOAK_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD}
+      KEYCLOAK_ADMIN_USER: ${KEYCLOAK_ADMIN_USER}
+      KEYCLOAK_MANAGEMENT_USER: ${KEYCLOAK_MANAGEMENT_USER}
       KEYCLOAK_MANAGEMENT_PASSWORD: ${KEYCLOAK_MANAGEMENT_PASSWORD}
+      KEYCLOAK_CREATE_ADMIN_USER: ${KEYCLOAK_CREATE_ADMIN_USER}
       KEYCLOAK_DATABASE_HOST: ${POSTGRES_HOST}
       KEYCLOAK_DATABASE_NAME: ${KEYCLOAK_DATABASE_NAME}
       KEYCLOAK_DATABASE_USER: ${KEYCLOAK_DATABASE_USER}
@@ -82,7 +86,7 @@ services:
       - "${KEYCLOAK_HTTP_PORT}:8080"
       - "${KEYCLOAK_HTTPS_PORT}:8443"
     profiles:
-      - backend
+      - security
   rabbitmq:
     image:  rabbitmq:3.10.7-management
     hostname: rabbit
@@ -162,7 +166,6 @@ services:
       - ${SHARED_VOL}/prometheus:/opt/bitnami/prometheus/data
     profiles:
       - monitoring
-
   mongo:
     image: mongo
     container_name: mongodb-1
@@ -177,7 +180,6 @@ services:
       - ${NETWORK}    
     profiles:
       - nosql
-
   mongo-express:
     image: mongo-express
     container_name: mongo-express-1 
@@ -200,7 +202,6 @@ services:
       - ${NETWORK}    
     profiles:
       - nosql
-
   redis:
     image: "redis:alpine"
     command: redis-server
@@ -213,3 +214,16 @@ services:
       - ${NETWORK}    
     profiles:
       - nosql
+  activvmq-artemis:
+    image: quay.io/artemiscloud/activemq-artemis-broker
+    ports:
+      - 8161:8161
+      - 61616:61616
+      - 5672:5672
+    environment:
+      AMQ_USER: admin
+      AMQ_PASSWORD: admin
+    networks:
+      - ${NETWORK}
+    profiles:
+      - mq

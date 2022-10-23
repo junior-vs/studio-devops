@@ -12,7 +12,7 @@ docker network create dev_network
 ```bash
 # basico
 docker compose -f "docker-compose.yml" up -d --build 
-# backend [rabbitmq, kafka, keycloak]
+# backend [rabbitmq, kafka]
 docker compose -f "docker-compose.yml" --profile backend up -d --build 
 # qa [sonar]
 docker compose -f "docker-compose.yml" --profile qa up -d --build 
@@ -20,34 +20,37 @@ docker compose -f "docker-compose.yml" --profile qa up -d --build
 docker compose -f "docker-compose.yml" --profile monitoring up -d --build 
 # nosql [mongo, redis]
 docker compose -f "docker-compose.yml" --profile nosql up -d --build 
+# nosql [keycloak]
+docker compose -f "docker-compose.yml" --profile security up -d --build 
+# mq [activemq artemis]
+docker compose -f "docker-compose.yml" --profile mq up -d --build 
 ```
 
 
 
 ## Tecnologias
 
-- Postgres
-- Mysql
-- Kafka
-- keycloak
-- mongodb
-- redis
-- activemq-artemis
+### Postgres
+  #### Pgadmin
+  - http://localhost:5050
+  - user: admin@admin.org
+  - senha: admin
 
-# Getting Started
-TODO: Guide users through getting your code up and running on their own system. In this section you can talk about:
-1.	Installation process
-2.	Software dependencies
-3.	Latest releases
-4.	API references
 
-# Build and Test
-TODO: Describe and show how to build your code and run the tests. 
+### Mysql
 
-# Contribute
-TODO: Explain how other users and developers can contribute to make your code better. 
+### Kafka
 
-If you want to learn more about creating good readme files then refer the following [guidelines](https://docs.microsoft.com/en-us/azure/devops/repos/git/create-a-readme?view=azure-devops). You can also seek inspiration from the below readme files:
-- [ASP.NET Core](https://github.com/aspnet/Home)
-- [Visual Studio Code](https://github.com/Microsoft/vscode)
-- [Chakra Core](https://github.com/Microsoft/ChakraCore)
+### keycloak
+- http://localhost:9080
+- user: admin
+- password: admin
+
+### mongodb
+
+### redis
+
+### rabbitmq
+- [web](http://localhost:15672/)
+- user: admin 
+- password: admin
