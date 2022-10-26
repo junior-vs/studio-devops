@@ -6,6 +6,7 @@ psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname "$POSTGRES_DB" <<-E
 
   CREATE USER sonarapp;
   CREATE USER keycloakapp;
+  CREATE USER appuser;
 
   CREATE DATABASE sonardb;
   CREATE DATABASE keycloakdb;

@@ -65,7 +65,7 @@ services:
     profiles:
       - qa
   keycloak:
-    image: bitnami/keycloak
+    image: bitnami/keycloak:19.0.3
     container_name: keycloak-1
     hostname: keycloak
     environment:
