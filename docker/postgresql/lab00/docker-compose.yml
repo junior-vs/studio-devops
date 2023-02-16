@@ -3,36 +3,25 @@ version: '3.5'
 services:
   postgres:
     container_name: postgres_container
-    image: postgres:11.6
+    image: postgres:15
     environment:
-      POSTGRES_USER: ${POSTGRES_USER:-postgres}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-p102030}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       PGDATA: /data/postgres
     volumes:
-       - "./data/postgres-data:/data/postgres"
-       - "./data/postgres:/var/lib/postgresql/data"
-       - "./data/pgdata:/var/lib/postgresql/data/pgdata"
-       - "./schemas:/schemas"
+       - "${SHARED}/data/postgres-data:/data/postgres"
+       - "${SHARED}/data/postgres:/var/lib/postgresql/data"
+       - "${SHARED}/data/pgdata:/var/lib/postgresql/data/pgdata"
+       - "./scripts:/docker-entrypoint-initdb.d"
     ports:
       - "5432:5432"
     networks:
-      - network-postgre
-    restart: unless-stopped
-  
-  pgadmin:
-    container_name: pgadmin_container
-    image: dpage/pgadmin4:4.21
-    environment:
-      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL:-pgadmin4@pgadmin.org}
-      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD:-admin}
-    ports:
-      - "${PGADMIN_PORT:-5050}:80"
-    networks:
-      - network-postgre
-    restart: unless-stopped
-    depends_on: 
-      - postgres
+      - dev_network
 
 networks:
-  network-postgre:
-    driver: bridge
+  dev_network:
+    driver: bridge   
+
+volumes:
+  shared: 
+    driver: local

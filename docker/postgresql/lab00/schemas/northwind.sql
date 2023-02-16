@@ -18,9 +18,13 @@ SET default_tablespace = '';
 
 SET default_with_oids = false;
 
+CREATE USER app_user;
+ALTER USER app_user PASSWORD 'app_user';
+
 CREATE USER northwind_user;
 ALTER USER northwind_user PASSWORD 'northwind_users';
-CREATE DATABASE northwind;
+CREATE SCHEMA IF NOT EXISTS northwind AUTHORIZATION northwind_user;
+SET  SCHEMA 'northwind';
 
 
 ---

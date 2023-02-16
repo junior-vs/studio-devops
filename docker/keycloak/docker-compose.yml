@@ -1,32 +1,48 @@
-version: '3'
+version: "3.9"
 
+networks:
+  dev_network:
+    driver: bridge
 volumes:
-  postgres_data:
-      driver: local
+  shared:
+    driver: local
 
 services:
   postgres:
-      image: postgres
-      volumes:
-        - postgres_data:/var/lib/postgresql/data
-      environment:
-        POSTGRES_DB: keycloak
-        POSTGRES_USER: keycloak
-        POSTGRES_PASSWORD: password
+    container_name: postgres-keycloak
+    image: postgres:15
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${KEYCLOAK_DB}
+      PGDATA: /data/postgres
+    volumes:
+      - "${SHARED_VOL}/postgresql/postgresdata/postgres:/data/postgres"
+      - "${SHARED_VOL}/postgresql/var/lib/postgresql/data:/var/lib/postgresql/data"
+      - "${SHARED_VOL}/postgresql/var/lib/postgresql/data/pgdata:/var/lib/postgresql/data/pgdata"
+      - "./scritps:/docker-entrypoint-initdb.d"
+      - "./schemas:/schemas"
+    ports:
+      - "${POSTGRES_PORT}:5432"
+    networks:
+      - ${NETWORK}
   keycloak:
-      image: jboss/keycloak
-      environment:
-        DB_VENDOR: POSTGRES
-        DB_ADDR: postgres
-        DB_DATABASE: keycloak
-        DB_USER: keycloak
-        DB_SCHEMA: public
-        DB_PASSWORD: password
-        KEYCLOAK_USER: admin
-        KEYCLOAK_PASSWORD: Pa55w0rd
-        # Uncomment the line below if you want to specify JDBC parameters. The parameter below is just an example, and it shouldn't be used in production without knowledge. It is highly recommended that you read the PostgreSQL JDBC driver documentation in order to use it.
-        #JDBC_PARAMS: "ssl=true"
-      ports:
-        - 8180:8080
-      depends_on:
-        - postgres
+    image: jboss/keycloak:16.1.1
+    environment:
+      DB_VENDOR: POSTGRES
+      DB_ADDR: postgres
+      DB_DATABASE: ${KEYCLOAK_DB}
+      DB_USER: ${POSTGRES_USER}
+      DB_SCHEMA: public
+      DB_PASSWORD: ${POSTGRES_PASSWORD}
+      DB_PORT: ${POSTGRES_PORT}
+      KEYCLOAK_USER: admin
+      KEYCLOAK_PASSWORD: root
+      # Uncomment the line below if you want to specify JDBC parameters. The parameter below is just an example, and it shouldn't be used in production without knowledge. It is highly recommended that you read the PostgreSQL JDBC driver documentation in order to use it.
+      #JDBC_PARAMS: "ssl=true"
+    ports:
+      - ${KEYCLOAK_PORT}:8080
+    depends_on:
+      - postgres
+    networks:
+      - ${NETWORK}

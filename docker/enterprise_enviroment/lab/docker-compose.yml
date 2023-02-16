@@ -3,12 +3,9 @@ version: "3.9"
 networks:
   dev_network:
     driver: bridge
-    external: true
-
 volumes:
   shared: 
     driver: local
-  schemas: {}
 
 services:
   postgres:
