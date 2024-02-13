@@ -1,0 +1,53 @@
+
+batch
+
+# Create profile
+/profile=full-ha:clone(to-profile=aw)
+
+# Create Server-group
+/server-group=aw-server-group:add(profile=aw, socket-binding-group=full-ha-sockets)
+/server-group=aw-server-group/jvm=default:add
+/server-group=aw-server-group/jvm=default:write-attribute(name=heap-size,value="64m")
+/server-group=aw-server-group/jvm=default:write-attribute(name=max-heap-size,value="1024m")
+
+# Create Servers 01
+/host=master/server-config=aw-server01:add(group=aw-server-group)
+/host=master/server-config=aw-server01:write-attribute(name=socket-binding-port-offset,value=1110)
+/host=master/server-config=aw-server01:write-attribute(name=auto-start,value=true)
+/host=master/server-config=aw-server01/jvm=default:add
+
+# Create Servers 02 
+/host=master/server-config=aw-server02:add(group=aw-server-group)
+/host=master/server-config=aw-server02:write-attribute(name=socket-binding-port-offset,value=1120)
+/host=master/server-config=aw-server02:write-attribute(name=auto-start,value=true)
+/host=master/server-config=aw-server02/jvm=default:add
+
+
+# Create Servers 03 
+/host=master/server-config=aw-server03:add(group=aw-server-group)
+/host=master/server-config=aw-server03:write-attribute(name=socket-binding-port-offset,value=1130)
+/host=master/server-config=aw-server03:write-attribute(name=auto-start,value=true)
+/host=master/server-config=aw-server03/jvm=default:add
+
+#create datasource
+
+/profile=aw/subsystem=datasources/jdbc-driver=com.postgresql:add(driver-name=com.postgresql,driver-module-name=com.postgresql,driver-xa-datasource-class-name=org.postgresql.xa.PGXADataSource)
+data-source add --profile=aw --name=AW_DS --jndi-name=java:jboss/AW_DS --driver-name=com.postgresql --connection-url=jdbc:postgresql://localhost:5432/AdventureWorks --user-name=postgres --password=p102030  --enabled=true --use-java-context="true" --validate-on-match=true --background-validation=false --valid-connection-checker-class-name=org.jboss.jca.adapters.jdbc.extensions.postgres.PostgreSQLValidConnectionChecker --exception-sorter-class-name=org.jboss.jca.adapters.jdbc.extensions.postgres.PostgreSQLExceptionSorter
+
+jms-queue add --profile=aw --queue-address=TestQueue --entries=[queue/TestQueue jms/queue/TestQueue java:jboss/exported/jms/queue/TestQueue]
+jms-topic add --profile=aw --topic-address=TestTopic --entries=[topic/TestTopic jms/topic/TestTopic java:jboss/exported/jms/topic/TestTopic]
+
+
+
+
+# Configure the ee subsystem to enable MDB annotation property substitution
+/profile=aw/subsystem=ee:write-attribute(name=annotation-property-replacement,value=true)
+
+# Define system properties to be used in the substititution
+/server-group=aw-server-group/system-property=property.mdb.queue.test_queue:add(value=jms/queue/TestQueue)
+/server-group=aw-server-group/system-property=property.mdb.topic.test_topic:add(value=jms/topic/TestTopic)
+/server-group=aw-server-group/system-property=property.connection.factory:add(value=java:/ConnectionFactory)
+
+run-batch
+# Reload the server configuration
+reload --host=master

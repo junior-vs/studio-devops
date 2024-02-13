@@ -1,0 +1,10 @@
+Chttps://www.diolinux.com.br/2019/06/instale-o-novo-gimp-2-10-12.html
+
+
+flatpak run org.gimp.GIMP
+flatpak run org.gimp.GIMP
+
+
+A desinstalação pode ser efetuada da seguinte forma:
+
+flatpak uninstall org.gimp.GIMP

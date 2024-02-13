@@ -1,0 +1,1 @@
+module add --name=com.postgresql --resources=/home/valdir/dev/sources/studio-devops/scripts/jboss_eap/resources/postgresql-42.2.5.jar --dependencies=javax.api,javax.transaction.api

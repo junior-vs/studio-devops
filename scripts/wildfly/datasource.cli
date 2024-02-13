@@ -1,5 +1,0 @@
-module add --name=org.postgresql --resources=/home/valdir/dev/sources/studio-devops/scripts/jboss_eap/resources/postgresql-42.2.5.jar --dependencies=javax.api,javax.transaction.api
-
-/subsystem=datasources/jdbc-driver=org.postgresql:add(driver-name=org.postgresql,driver-module-name=org.postgresql,driver-xa-datasource-class-name=org.postgresql.xa.PGXADataSource)
-
-data-source add --name=awdatasource --jndi-name=java:jboss/datasources/awdatasource --driver-name=org.postgresql --connection-url=jdbc:postgresql://localhost:5432/adventureworks --user-name=appuser --password=appuser --validate-on-match=true --background-validation=false --valid-connection-checker-class-name=org.jboss.jca.adapters.jdbc.extensions.postgres.PostgreSQLValidConnectionChecker --exception-sorter-class-name=org.jboss.jca.adapters.jdbc.extensions.postgres.PostgreSQLExceptionSorter
