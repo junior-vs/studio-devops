@@ -1,3 +1,4 @@
+
 SET default_with_oids = false;
 
 CREATE USER app_user;
