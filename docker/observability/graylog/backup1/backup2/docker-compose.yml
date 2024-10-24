@@ -1,0 +1,124 @@
+services:
+  # MongoDB: https://hub.docker.com/_/mongo/
+  mongodb:
+    image: "mongo:8.0"
+    volumes:
+      - "mongodb_data:/data/db"
+    networks:
+      - graylog
+
+      # Graylog: https://hub.docker.com/r/graylog/graylog/
+  graylog:
+    hostname: "server"
+    image: "graylog/graylog-enterprise:6.0"
+    # To install Graylog Open: "graylog/graylog:6.0"
+    depends_on:
+      mongodb:
+        condition: "service_completed_successfully"
+      opensearch-node2:
+        condition: "service_completed_successfully"
+      opensearch-node1:
+        condition: "service_completed_successfully"    
+    environment:
+      - GRAYLOG_NODE_ID_FILE="/usr/share/graylog/data/config/node-id"
+      - GRAYLOG_HTTP_BIND_ADDRESS="0.0.0.0:9000"
+      - GRAYLOG_ELASTICSEARCH_HOSTS="http://127.0.0.1:9200" 
+      - GRAYLOG_MONGODB_URI="mongodb://mongodb:27017/graylog"
+      # To make reporting (headless_shell) work inside a Docker container
+      - GRAYLOG_REPORT_DISABLE_SANDBOX="true"
+      # CHANGE ME (must be at least 16 characters)!
+      - GRAYLOG_PASSWORD_SECRET="somepasswordpepper"
+      # Password: "admin"
+      - GRAYLOG_ROOT_PASSWORD_SHA2="8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918"
+      - GRAYLOG_HTTP_EXTERNAL_URI="http://127.0.0.1:9000/"
+    entrypoint: /usr/bin/tini -- wait-for-it http://127.0.0.1:9200 --  /docker-entrypoint.sh
+    ports:
+      # Graylog web interface and REST API
+      - "9000:9000/tcp"
+      # Beats
+      - "5044:5044/tcp"
+      # Syslog TCP
+      - "5140:5140/tcp"
+      # Syslog UDP
+      - "5140:5140/udp"
+      # GELF TCP
+      - "12201:12201/tcp"
+      # GELF UDP
+      - "12201:12201/udp"
+      # Forwarder data
+      - "13301:13301/tcp"
+      # Forwarder config
+      - "13302:13302/tcp"
+    volumes:
+      - "graylog_data:/usr/share/graylog/data/data"
+      - "graylog_journal:/usr/share/graylog/data/journal"
+
+  opensearch-node1:
+    image: opensearchproject/opensearch:latest
+    container_name: opensearch-node1
+    environment:
+      - cluster.name=opensearch-cluster
+      - node.name=opensearch-node1
+      - discovery.seed_hosts=opensearch-node1,opensearch-node2
+      - cluster.initial_cluster_manager_nodes=opensearch-node1,opensearch-node2
+      - bootstrap.memory_lock=true # along with the memlock settings below, disables swapping
+      - OPENSEARCH_JAVA_OPTS=-Xms512m -Xmx512m # minimum and maximum Java heap size, recommend setting both to 50% of system RAM
+      - OPENSEARCH_INITIAL_ADMIN_PASSWORD=${OPENSEARCH_INITIAL_ADMIN_PASSWORD} # Sets the demo admin user password when using demo configuration, required for OpenSearch 2.12 and higher
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+      nofile:
+        soft: 65536 # maximum number of open files for the OpenSearch user, set to at least 65536 on modern systems
+        hard: 65536
+    volumes:
+      - opensearch-data1:/usr/share/opensearch/data
+    ports:
+      - 9200:9200
+      - 9600:9600 # required for Performance Analyzer
+    networks:
+      - graylog
+  opensearch-node2:
+    image: opensearchproject/opensearch:latest
+    container_name: opensearch-node2
+    environment:
+      - cluster.name=opensearch-cluster
+      - node.name=opensearch-node2
+      - discovery.seed_hosts=opensearch-node1,opensearch-node2
+      - cluster.initial_cluster_manager_nodes=opensearch-node1,opensearch-node2
+      - bootstrap.memory_lock=true
+      - OPENSEARCH_JAVA_OPTS=-Xms512m -Xmx512m
+      - OPENSEARCH_INITIAL_ADMIN_PASSWORD=${OPENSEARCH_INITIAL_ADMIN_PASSWORD}
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+      nofile:
+        soft: 65536
+        hard: 65536
+    volumes:
+      - opensearch-data2:/usr/share/opensearch/data
+    networks:
+      - graylog
+  opensearch-dashboards:
+    image: opensearchproject/opensearch-dashboards:latest
+    container_name: opensearch-dashboards
+    ports:
+      - 5601:5601
+    expose:
+      - "5601"
+    environment:
+      OPENSEARCH_HOSTS: '["https://opensearch-node1:9200","https://opensearch-node2:9200"]'
+    networks:
+      - graylog
+
+volumes:
+  mongodb_data:
+  graylog_data:
+  graylog_journal:
+  opensearch-data1:
+  opensearch-data2:
+
+networks:
+  graylog:
+    driver: bridge

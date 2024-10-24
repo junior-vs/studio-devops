@@ -1,0 +1,8 @@
+version: '3.4'
+
+services:
+  sonar:
+    image: sonar
+    build:
+      context: .
+      dockerfile: ./Dockerfile
