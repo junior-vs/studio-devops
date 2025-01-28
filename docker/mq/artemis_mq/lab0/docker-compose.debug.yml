@@ -1,0 +1,10 @@
+version: '2.1'
+
+services:
+  activemq_artemis:
+    image: activemq_artemis
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - 3000:3000
