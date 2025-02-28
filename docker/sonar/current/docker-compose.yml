@@ -1,0 +1,51 @@
+services:
+  postgresql:
+    image: postgres:17
+    container_name: sonarqube-postgres
+    environment:
+      - POSTGRES_USER=sonar
+      - POSTGRES_PASSWORD=sonar
+      - POSTGRES_DB=sonar
+    volumes:
+      - .vol/db/postgresql_data:/var/lib/postgresql/data
+    networks:
+      - sonarnet
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U sonar"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  sonarqube:
+    image: sonarqube:community
+    container_name: sonarqube
+    depends_on:
+      - postgresql
+    environment:
+      - SONAR_JDBC_URL=jdbc:postgresql://postgresql:5432/sonar
+      - SONAR_JDBC_USERNAME=sonar
+      - SONAR_JDBC_PASSWORD=sonar
+    volumes:
+      - .vol/sonar/data:/opt/sonarqube/data
+      - .vol/sonar/extensions:/opt/sonarqube/extensions
+      - .vol/sonar/logs:/opt/sonarqube/logs
+    ports:
+      - "9000:9000"
+    networks:
+      - sonarnet
+    restart: unless-stopped
+    ulimits:
+      nofile:
+        soft: 65536
+        hard: 65536
+
+networks:
+  sonarnet:
+    driver: bridge
+
+volumes:
+  postgresql_data:
+  sonarqube_data:
+  sonarqube_extensions:
+  sonarqube_logs:
